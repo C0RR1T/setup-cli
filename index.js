@@ -6,26 +6,26 @@ const exec = require('child_process');
 const fs = require('fs').promises;
 
 const parser = new ArgumentParser({
-    description: 'Prettier settings'
+    description: 'Prettier settings',
 });
 parser.add_argument('-d', '--dir', {
     help: 'Directory of package.json',
-    default: '.'
+    default: '.',
 });
 parser.add_argument('-t', '--template', {
-    help: 'Location of the Template settings'
+    help: 'Location of the Template settings',
 });
 parser.add_argument('--typescript', {
     help: 'Create tsconfig with default template',
-    action: 'store_true'
+    action: 'store_true',
 });
 parser.add_argument('--typescript-template', {
-    help: 'Create tsconfig with custom template'
+    help: 'Create tsconfig with custom template',
 });
 
 parser.add_argument('--yarn', {
     help: 'Use yarn when installing typescript',
-    action: 'store_true'
+    action: 'store_true',
 });
 
 const { dir, template, typescript, typescriptTemplate, yarn } =
@@ -57,7 +57,7 @@ const readFile = async () => {
         .catch(() => console.log('No template file could be read'));
     const [packageJSON, templateJSON] = await Promise.all([
         packageJsonPromise,
-        templatePromise
+        templatePromise,
     ]);
 
     return [packageJSON, templateJSON];
@@ -69,10 +69,14 @@ const writeFile = async data => {
 };
 
 const typescriptConfig = async packageJSON => {
-    if(typescript) {
+    if (typescript) {
         if (
-            !Object.keys(packageJSON?.dependencies || {}).includes('typescript') &&
-            !Object.keys(packageJSON?.devDependencies || {}).includes('typescript')
+            !Object.keys(packageJSON?.dependencies || {}).includes(
+                'typescript'
+            ) &&
+            !Object.keys(packageJSON?.devDependencies || {}).includes(
+                'typescript'
+            )
         ) {
             console.log('No Typescript dependency, installing typescript...');
             const cmd = `cd ${dir} && ${
@@ -109,9 +113,9 @@ const typescriptConfig = async packageJSON => {
                             noEmit: true,
                             noImplicitAny: true,
                             noImplicitReturns: true,
-                            jsx: 'react-jsx'
+                            jsx: 'react-jsx',
                         },
-                        include: ['./src/']
+                        include: ['./src/'],
                     })
                 );
                 console.log('Finished Writing tsconfig file');
@@ -122,9 +126,12 @@ const typescriptConfig = async packageJSON => {
 };
 
 const writePrettierSettings = async () => {
+    await fs.access(`${dir}/package.json`).catch(() => {
+        console.error('Cannot access package.json');
+        process.exit(1);
+    });
     let [packageJSON, templateJSON] = await readFile();
     await typescriptConfig();
-
     await writeFile(
         JSON.stringify({
             ...packageJSON,
@@ -138,8 +145,8 @@ const writePrettierSettings = async () => {
                 singleQuote: true,
                 jsxSingleQuote: true,
                 jsxBracketSameLine: true,
-                arrowParens: 'avoid'
-            }
+                arrowParens: 'avoid',
+            },
         })
     );
     console.log('Finished writing to package.json \nFormatting...');

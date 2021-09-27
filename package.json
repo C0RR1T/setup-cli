@@ -1,11 +1,16 @@
 {
-    "name": "write-prettier",
+    "name": "setup-cli",
     "author": {
         "name": "Corsin Ragettli",
         "email": "corsin@ragett.li"
     },
-    "description": "Inserts your prettier settings into your package.json.",
-    "version": "1.0.0",
+    "homepage": "https://github.com/C0RR1T/setup-cli",
+    "bugs": {
+        "url": "https://github.com/C0RR1T/setup-cli/issues"
+    },
+    "description": "Inserts your prettier and tsconfig settings into your projects.",
+    "readme": "/README.md",
+    "version": "1.0.1",
     "main": "/index.js",
     "license": "MIT",
     "bin": "/index.js",
