@@ -38,8 +38,5 @@
         "jsxSingleQuote": true,
         "jsxBracketSameLine": true,
         "arrowParens": "avoid"
-    },
-    "devDependencies": {
-        "typescript": "^4.4.3"
     }
 }
