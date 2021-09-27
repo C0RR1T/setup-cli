@@ -28,48 +28,43 @@ parser.add_argument('--yarn', {
     action: 'store_true',
 });
 
-const { dir, template, typescript, typescriptTemplate, yarn } =
+const { dir, template, typescript, typescript_template, yarn } =
     parser.parse_args();
 const path = `${dir}/package.json`;
 
-const readFile = async () => {
-    console.log('Reading package.json...');
+async function readFile() {
+    console.log('Reading package.json & prettier template...');
     const packageJsonPromise = fs
         .readFile(path)
-        .then(val => {
-            console.log('Successfully read package.json');
-            return JSON.parse(val);
-        })
+        .then(val => val.toString('utf-8'))
+        .then(val => JSON.parse(val))
         .catch(err => {
             console.log(
                 'An error occurred while reading the package.json',
                 err
             );
-            process.abort();
+            process.exit(1);
         });
-    console.log('Reading template file...');
     const templatePromise = fs
         .readFile(template)
-        .then(val => {
-            console.log('Finished reading template file...');
-            return JSON.parse(val);
-        })
-        .catch(() => console.log('No template file could be read'));
+        .then(val => val.toString('utf-8'))
+        .then(JSON.parse)
+        .catch(() => console.log('No prettier template file could be read'));
     const [packageJSON, templateJSON] = await Promise.all([
         packageJsonPromise,
         templatePromise,
     ]);
 
     return [packageJSON, templateJSON];
-};
+}
 
-const writeFile = async data => {
+async function writeFile(data) {
     console.log('Writing to package.json...');
     await fs.writeFile(path, data);
-};
+}
 
-const typescriptConfig = async packageJSON => {
-    if (typescript) {
+async function typescriptConfig(packageJSON) {
+    if (typescript || typescript_template) {
         if (
             !Object.keys(packageJSON?.dependencies || {}).includes(
                 'typescript'
@@ -87,51 +82,60 @@ const typescriptConfig = async packageJSON => {
             install.on('exit', () =>
                 console.log('Successfully installed typescript')
             );
-            if (typescriptTemplate) {
-                console.log('Copying Template tsconfig file...');
-                await fs.copyFile(typescriptTemplate, `${dir}/tsconfig.json`);
-                console.log('Copied Tsconfig file');
-            } else {
-                console.log('Writing tsconfig file...');
-                await fs.writeFile(
-                    `${dir}/tsconfig.json`,
-                    JSON.stringify({
-                        compilerOptions: {
-                            target: 'es5',
-                            lib: ['dom', 'dom.iterable', 'esnext'],
-                            allowJs: true,
-                            skipLibCheck: true,
-                            esModuleInterop: true,
-                            allowSyntheticDefaultImports: true,
-                            strict: true,
-                            forceConsistentCasingInFileNames: true,
-                            noFallthroughCasesInSwitch: true,
-                            module: 'esnext',
-                            moduleResolution: 'node',
-                            resolveJsonModule: true,
-                            isolatedModules: true,
-                            noEmit: true,
-                            noImplicitAny: true,
-                            noImplicitReturns: true,
-                            jsx: 'react-jsx',
-                        },
-                        include: ['./src/'],
-                    })
-                );
-                console.log('Finished Writing tsconfig file');
-            }
-            await exec.exec(`prettier --write ${dir}/tsconfig.json`);
         }
+        if (typescript_template) {
+            console.log('Copying Template tsconfig file...');
+            await fs
+                .copyFile(typescript_template, `${dir}/tsconfig.json`)
+                .catch(err => {
+                    console.error("Couldn't copy tsconfig.json file", err);
+                    process.exit(1);
+                });
+            console.log('Copied Tsconfig file');
+        } else {
+            console.log('Writing tsconfig file...');
+            await fs.writeFile(
+                `${dir}/tsconfig.json`,
+                JSON.stringify({
+                    compilerOptions: {
+                        target: 'es5',
+                        lib: ['dom', 'dom.iterable', 'esnext'],
+                        allowJs: true,
+                        skipLibCheck: true,
+                        esModuleInterop: true,
+                        allowSyntheticDefaultImports: true,
+                        strict: true,
+                        forceConsistentCasingInFileNames: true,
+                        noFallthroughCasesInSwitch: true,
+                        module: 'esnext',
+                        moduleResolution: 'node',
+                        resolveJsonModule: true,
+                        isolatedModules: true,
+                        noEmit: true,
+                        noImplicitAny: true,
+                        noImplicitReturns: true,
+                        jsx: 'react-jsx',
+                    },
+                    include: ['./src/'],
+                })
+            );
+        }
+        console.log('Finished Writing tsconfig file');
+        await exec.exec(`prettier --write ${dir}/tsconfig.json`);
     }
-};
+}
 
-const writePrettierSettings = async () => {
+async function writePrettierSettings() {
     await fs.access(`${dir}/package.json`).catch(() => {
         console.error('Cannot access package.json');
         process.exit(1);
     });
     let [packageJSON, templateJSON] = await readFile();
-    await typescriptConfig();
+    console.log(
+        'Successfully read the package.json file',
+        templateJSON ? 'Successfully read the prettier template file' : ''
+    );
+    await typescriptConfig(packageJSON);
     await writeFile(
         JSON.stringify({
             ...packageJSON,
@@ -152,6 +156,6 @@ const writePrettierSettings = async () => {
     console.log('Finished writing to package.json \nFormatting...');
     await exec.exec(`prettier --write ${dir}/package.json`);
     console.log('Finished formatting.');
-};
+}
 
 writePrettierSettings().then(() => console.log('Done.'));
