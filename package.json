@@ -1,0 +1,27 @@
+{
+    "name": "write-prettier",
+    "author": {
+        "name": "Corsin Ragettli",
+        "email": "corsin@ragett.li"
+    },
+    "description": "Inserts your prettier settings into your package.json.",
+    "version": "1.0.0",
+    "main": "/index.js",
+    "license": "MIT",
+    "bin": "/index.js",
+    "dependencies": {
+        "argparse": "^2.0.1"
+    },
+    "prettier": {
+        "tabWidth": 4,
+        "printWidth": 80,
+        "semi": true,
+        "quoteProps": "consistent",
+        "bracketSpacing": true,
+        "bracketSameLine": true,
+        "singleQuote": true,
+        "jsxSingleQuote": true,
+        "jsxBracketSameLine": true,
+        "arrowParens": "avoid"
+    }
+}
