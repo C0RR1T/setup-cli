@@ -9,13 +9,23 @@
         "url": "https://github.com/C0RR1T/setup-cli/issues"
     },
     "description": "Inserts your prettier and tsconfig settings into your projects.",
-    "readme": "/README.md",
-    "version": "1.0.2",
+    "keywords": [
+        "prettier",
+        "typescript",
+        "setup",
+        "cli"
+    ],
+    "readme": "./README.md",
+    "version": "2.0.0",
+    "files": [
+        "./README.md"
+    ],
     "main": "/index.js",
     "license": "MIT",
     "bin": "/index.js",
     "dependencies": {
-        "argparse": "^2.0.1"
+        "argparse": "^2.0.1",
+        "prettier": "latest"
     },
     "prettier": {
         "tabWidth": 4,
@@ -28,5 +38,8 @@
         "jsxSingleQuote": true,
         "jsxBracketSameLine": true,
         "arrowParens": "avoid"
+    },
+    "devDependencies": {
+        "typescript": "^4.4.3"
     }
 }
