@@ -6,26 +6,26 @@ const exec = require('child_process');
 const fs = require('fs').promises;
 
 const parser = new ArgumentParser({
-    description: 'Prettier settings',
+    description: 'Prettier settings'
 });
 parser.add_argument('-d', '--dir', {
     help: 'Directory of package.json',
-    default: '.',
+    default: '.'
 });
 parser.add_argument('-t', '--template', {
-    help: 'Location of the Template settings',
+    help: 'Location of the Template settings'
 });
 parser.add_argument('--typescript', {
     help: 'Create tsconfig with default template',
-    action: 'store_true',
+    action: 'store_true'
 });
 parser.add_argument('--typescript-template', {
-    help: 'Create tsconfig with custom template',
+    help: 'Create tsconfig with custom template'
 });
 
 parser.add_argument('--yarn', {
     help: 'Use yarn when installing typescript',
-    action: 'store_true',
+    action: 'store_true'
 });
 
 const { dir, template, typescript, typescript_template, yarn } =
@@ -52,7 +52,7 @@ async function readFile() {
         .catch(() => console.log('No prettier template file could be read'));
     const [packageJSON, templateJSON] = await Promise.all([
         packageJsonPromise,
-        templatePromise,
+        templatePromise
     ]);
 
     return [packageJSON, templateJSON];
@@ -88,7 +88,7 @@ async function typescriptConfig(packageJSON) {
             await fs
                 .copyFile(typescript_template, `${dir}/tsconfig.json`)
                 .catch(err => {
-                    console.error("Couldn't copy tsconfig.json file", err);
+                    console.error('Couldn\'t copy tsconfig.json file', err);
                     process.exit(1);
                 });
             console.log('Copied Tsconfig file');
@@ -114,9 +114,9 @@ async function typescriptConfig(packageJSON) {
                         noEmit: true,
                         noImplicitAny: true,
                         noImplicitReturns: true,
-                        jsx: 'react-jsx',
+                        jsx: 'react-jsx'
                     },
-                    include: ['./src/'],
+                    include: ['./src/']
                 })
             );
         }
@@ -131,14 +131,11 @@ async function writePrettierSettings() {
         process.exit(1);
     });
     let [packageJSON, templateJSON] = await readFile();
-    if (!Object.keys(packageJSON.dependencies || {}).includes("prettier") || !Object.keys(packageJSON.devDependencies || {}).includes("prettier")) {
-        console.log("Adding prettier as dependency...");
-        if(yarn) {
-            exec.exec("yarn add prettier -D");
-        } else {
-            exec.exec("npm install prettier --save-dev");
-        }
-        console.log("Added prettier as dependency");
+    if (!Object.keys(packageJSON?.dependencies || {}).includes('prettier') || !Object.keys(packageJSON?.devDependencies || {}).includes('prettier')) {
+        console.log('Adding prettier as dependency...');
+        const cmd = yarn ? 'yarn add prettier -D' : 'npm install prettier --save-dev';
+        await exec.exec(cmd);
+        console.log('Added prettier as dependency.');
     }
     console.log(
         'Successfully read the package.json file',
@@ -158,8 +155,8 @@ async function writePrettierSettings() {
                 singleQuote: true,
                 jsxSingleQuote: true,
                 jsxBracketSameLine: true,
-                arrowParens: 'avoid',
-            },
+                arrowParens: 'avoid'
+            }
         })
     );
     console.log('Finished writing to package.json \nFormatting...');

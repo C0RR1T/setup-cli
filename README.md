@@ -1,6 +1,7 @@
 # Setup CLI
 
-The setup CLI automatically sets up a [prettier](https://www.npmjs.com/package/prettier) and [typescript](https://www.npmjs.com/package/typescript) config.
+The setup CLI automatically sets up a [prettier](https://www.npmjs.com/package/prettier)
+and [typescript](https://www.npmjs.com/package/typescript) config.
 
 ## API
 
@@ -42,6 +43,7 @@ The setup CLI automatically sets up a [prettier](https://www.npmjs.com/package/p
 ## Default Values
 
 Prettier config:
+
 ```json
 {
   "prettier": {
@@ -60,6 +62,7 @@ Prettier config:
 ```
 
 tsconfig.json
+
 ```json
 {
   "compilerOptions": {
