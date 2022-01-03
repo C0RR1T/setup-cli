@@ -1,0 +1,41 @@
+{
+    "name": "setup-cli",
+    "author": {
+        "name": "C0RR1T"
+    },
+    "homepage": "https://github.com/C0RR1T/setup-cli",
+    "bugs": {
+        "url": "https://github.com/C0RR1T/setup-cli/issues"
+    },
+    "description": "Inserts your prettier and tsconfig settings into your projects.",
+    "keywords": [
+        "prettier",
+        "typescript",
+        "setup",
+        "cli"
+    ],
+    "readme": "./README.md",
+    "version": "3.1.0",
+    "files": [
+        "./README.md"
+    ],
+    "main": "/index.js",
+    "license": "MIT",
+    "bin": "/index.js",
+    "dependencies": {
+        "argparse": "^2.0.1",
+        "prettier": "latest"
+    },
+    "prettier": {
+        "tabWidth": 4,
+        "printWidth": 80,
+        "semi": true,
+        "quoteProps": "consistent",
+        "bracketSpacing": true,
+        "bracketSameLine": true,
+        "singleQuote": true,
+        "jsxSingleQuote": true,
+        "jsxBracketSameLine": true,
+        "arrowParens": "avoid"
+    }
+}
